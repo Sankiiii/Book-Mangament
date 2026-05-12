@@ -5,7 +5,6 @@ import 'package:uuid/uuid.dart';
 import '../models/user_model.dart';
 import '../utils/app_constants.dart';
 
-// ─── Auth State ─────────────────────────────────────────────────────────────
 
 class AuthState {
   final UserModel? currentUser;
@@ -37,7 +36,6 @@ class AuthState {
   bool get isAdmin => currentUser?.role == AppConstants.roleAdmin;
 }
 
-// ─── Notifier ────────────────────────────────────────────────────────────────
 
 class AuthNotifier extends StateNotifier<AuthState> {
   AuthNotifier() : super(const AuthState()) {
@@ -63,7 +61,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
     final prefs = await SharedPreferences.getInstance();
     final usersJson = prefs.getString(AppConstants.usersKey);
     if (usersJson == null) {
-      // Seed default admin + user
       final admin = UserModel(
         id: _uuid.v4(),
         username: 'admin',
@@ -194,7 +191,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
   void clearError() => state = state.copyWith(clearError: true);
 }
 
-// ─── Providers ───────────────────────────────────────────────────────────────
 
 final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
   return AuthNotifier();

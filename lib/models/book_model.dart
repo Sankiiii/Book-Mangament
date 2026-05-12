@@ -5,7 +5,7 @@ class BookModel {
   final String genre;
   final String description;
   bool isAvailable;
-  String? borrowedBy; // userId who borrowed
+  String? borrowedBy; 
   DateTime? borrowedAt;
 
   BookModel({

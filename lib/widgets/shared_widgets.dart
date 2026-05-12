@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../utils/app_theme.dart';
 
-// ─── App Button ───────────────────────────────────────────────────────────────
 
 class AppButton extends StatelessWidget {
   final String label;
@@ -76,7 +75,6 @@ class AppButton extends StatelessWidget {
   }
 }
 
-// ─── App Text Field ───────────────────────────────────────────────────────────
 
 class AppTextField extends StatelessWidget {
   final String label;
@@ -142,7 +140,6 @@ class AppTextField extends StatelessWidget {
   }
 }
 
-// ─── App Dropdown ─────────────────────────────────────────────────────────────
 
 class AppDropdown<T> extends StatelessWidget {
   final String label;
@@ -189,7 +186,6 @@ class AppDropdown<T> extends StatelessWidget {
   }
 }
 
-// ─── Status Badge ─────────────────────────────────────────────────────────────
 
 class StatusBadge extends StatelessWidget {
   final bool isAvailable;
@@ -232,7 +228,6 @@ class StatusBadge extends StatelessWidget {
   }
 }
 
-// ─── Role Badge ───────────────────────────────────────────────────────────────
 
 class RoleBadge extends StatelessWidget {
   final String role;
@@ -261,7 +256,6 @@ class RoleBadge extends StatelessWidget {
   }
 }
 
-// ─── Empty State ──────────────────────────────────────────────────────────────
 
 class EmptyStateWidget extends StatelessWidget {
   final String title;
@@ -319,7 +313,6 @@ class EmptyStateWidget extends StatelessWidget {
   }
 }
 
-// ─── Book Avatar ──────────────────────────────────────────────────────────────
 
 class BookAvatar extends StatelessWidget {
   final String title;
@@ -365,7 +358,6 @@ class BookAvatar extends StatelessWidget {
   }
 }
 
-// ─── Section Header ───────────────────────────────────────────────────────────
 
 class SectionHeader extends StatelessWidget {
   final String title;
@@ -392,7 +384,6 @@ class SectionHeader extends StatelessWidget {
   }
 }
 
-// ─── Stat Card ────────────────────────────────────────────────────────────────
 
 class StatCard extends StatelessWidget {
   final String label;

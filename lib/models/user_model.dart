@@ -2,7 +2,7 @@ class UserModel {
   final String id;
   final String username;
   final String email;
-  final String password; // hashed in real app
+  final String password; 
   final String role;
   final List<String> borrowedBookIds;
   final DateTime createdAt;

@@ -49,7 +49,6 @@ class UserProfileScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Profile card
                 Card(
                   child: Padding(
                     padding: EdgeInsets.all(24.w),
@@ -97,7 +96,6 @@ class UserProfileScreen extends ConsumerWidget {
                 ),
                 SizedBox(height: 16.h),
 
-                // Stats
                 Row(
                   children: [
                     Expanded(
@@ -121,7 +119,6 @@ class UserProfileScreen extends ConsumerWidget {
                 ),
                 SizedBox(height: 20.h),
 
-                // Currently borrowed
                 SectionHeader(title: 'Currently Borrowed'),
                 SizedBox(height: 12.h),
                 if (borrowed.isEmpty)

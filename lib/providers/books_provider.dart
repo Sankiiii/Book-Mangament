@@ -7,7 +7,6 @@ import '../models/user_model.dart';
 import '../utils/app_constants.dart';
 import 'auth_provider.dart';
 
-// ─── Books State ─────────────────────────────────────────────────────────────
 
 class BooksState {
   final List<BookModel> books;
@@ -82,7 +81,6 @@ class BooksState {
       books.where((b) => b.borrowedBy == userId).toList();
 }
 
-// ─── Notifier ────────────────────────────────────────────────────────────────
 
 class BooksNotifier extends StateNotifier<BooksState> {
   BooksNotifier(this.ref) : super(const BooksState()) {
@@ -215,7 +213,6 @@ class BooksNotifier extends StateNotifier<BooksState> {
     );
     await updateBook(updatedBook);
 
-    // Update user's borrowed list
     await _updateUserBorrowedBooks(userId, bookId, add: true);
     await ref.read(authProvider.notifier).refreshCurrentUser();
     return true;
@@ -272,7 +269,6 @@ class BooksNotifier extends StateNotifier<BooksState> {
   String newId() => _uuid.v4();
 }
 
-// ─── Users Notifier for Admin ─────────────────────────────────────────────────
 
 class UsersState {
   final List<UserModel> users;
@@ -332,7 +328,6 @@ class UsersNotifier extends StateNotifier<UsersState> {
   Future<void> refresh() => _load();
 }
 
-// ─── Providers ───────────────────────────────────────────────────────────────
 
 final booksProvider = StateNotifierProvider<BooksNotifier, BooksState>((ref) {
   return BooksNotifier(ref);

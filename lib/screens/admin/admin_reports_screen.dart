@@ -21,7 +21,6 @@ class AdminReportsScreen extends ConsumerWidget {
     final availableBooks = books.where((b) => b.isAvailable).length;
     final borrowedBooks = books.where((b) => !b.isAvailable).length;
 
-    // Genre breakdown
     final genreMap = <String, int>{};
     for (final b in books) {
       genreMap[b.genre] = (genreMap[b.genre] ?? 0) + 1;
@@ -29,10 +28,8 @@ class AdminReportsScreen extends ConsumerWidget {
     final genreSorted = genreMap.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
 
-    // Most borrowed (currently borrowed books)
     final currentlyBorrowed = books.where((b) => !b.isAvailable).toList();
 
-    // Active users (have borrowed books)
     final activeUsers = users.where((u) =>
         books.any((b) => b.borrowedBy == u.id)).toList();
 
@@ -53,7 +50,6 @@ class AdminReportsScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Overview stats
                 Text('Overview', style: Theme.of(context).textTheme.headlineSmall),
                 SizedBox(height: 12.h),
                 LayoutBuilder(builder: (context, constraints) {
@@ -95,7 +91,6 @@ class AdminReportsScreen extends ConsumerWidget {
                 }),
                 SizedBox(height: 24.h),
 
-                // Genre breakdown
                 Text('Books by Genre',
                     style: Theme.of(context).textTheme.headlineSmall),
                 SizedBox(height: 12.h),
@@ -162,7 +157,6 @@ class AdminReportsScreen extends ConsumerWidget {
                 ),
                 SizedBox(height: 24.h),
 
-                // Currently borrowed
                 Text('Currently Borrowed Books',
                     style: Theme.of(context).textTheme.headlineSmall),
                 SizedBox(height: 12.h),
@@ -209,7 +203,7 @@ class AdminReportsScreen extends ConsumerWidget {
                       ),
                 SizedBox(height: 24.h),
 
-                // Active users
+            
                 Text('Active Users',
                     style: Theme.of(context).textTheme.headlineSmall),
                 SizedBox(height: 12.h),

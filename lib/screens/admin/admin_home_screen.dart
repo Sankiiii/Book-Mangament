@@ -76,7 +76,6 @@ class AdminHomeScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Welcome header
                 Container(
                   width: double.infinity,
                   padding: EdgeInsets.all(24.w),
@@ -108,7 +107,6 @@ class AdminHomeScreen extends ConsumerWidget {
                 ),
                 SizedBox(height: 20.h),
 
-                // Stats grid
                 LayoutBuilder(builder: (context, constraints) {
                   final cols = constraints.maxWidth > 600 ? 4 : 2;
                   return GridView.count(
@@ -148,7 +146,6 @@ class AdminHomeScreen extends ConsumerWidget {
                 }),
                 SizedBox(height: 20.h),
 
-                // Quick Actions
                 Text('Quick Actions',
                     style: Theme.of(context).textTheme.headlineSmall),
                 SizedBox(height: 12.h),
@@ -204,7 +201,6 @@ class AdminHomeScreen extends ConsumerWidget {
                 }),
                 SizedBox(height: 20.h),
 
-                // Recent books
                 SectionHeader(
                   title: 'Recent Books',
                   actionLabel: 'View All',
