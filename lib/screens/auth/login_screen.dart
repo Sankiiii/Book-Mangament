@@ -30,7 +30,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   Future<void> _login() async {
     if (!_formKey.currentState!.validate()) return;
-    final success = await ref.read(authProvider.notifier).login(
+    final success = await ref
+        .read(authProvider.notifier)
+        .login(
           _usernameCtrl.text.trim(),
           _passwordCtrl.text.trim(),
           _selectedRole,
@@ -94,7 +96,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             color: AppColors.primary,
             borderRadius: BorderRadius.circular(16.r),
           ),
-          child: Icon(Icons.menu_book_rounded, color: Colors.white, size: 28.sp),
+          child: Icon(
+            Icons.menu_book_rounded,
+            color: Colors.white,
+            size: 28.sp,
+          ),
         ),
         SizedBox(height: 20.h),
         Text(
@@ -230,9 +236,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             AppDropdown<String>(
               label: 'Role',
               value: _selectedRole,
-              items: [AppConstants.roleUser, AppConstants.roleAdmin]
-                  .map((r) => DropdownMenuItem(value: r, child: Text(r)))
-                  .toList(),
+              items: [
+                AppConstants.roleUser,
+                AppConstants.roleAdmin,
+              ].map((r) => DropdownMenuItem(value: r, child: Text(r))).toList(),
               onChanged: (v) => setState(() => _selectedRole = v!),
               validator: (v) =>
                   v == null || v.isEmpty ? 'Please select a role' : null,
@@ -251,7 +258,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 Text(
                   "Don't have an account? ",
                   style: TextStyle(
-                      fontSize: 13.sp, color: AppColors.textSecondary),
+                    fontSize: 13.sp,
+                    color: AppColors.textSecondary,
+                  ),
                 ),
                 TextButton(
                   onPressed: () => context.go(AppConstants.registerRoute),

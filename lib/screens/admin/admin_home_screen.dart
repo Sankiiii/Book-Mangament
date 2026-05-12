@@ -33,8 +33,11 @@ class AdminHomeScreen extends ConsumerWidget {
                 color: AppColors.adminColor,
                 borderRadius: BorderRadius.circular(8.r),
               ),
-              child: Icon(Icons.admin_panel_settings,
-                  color: Colors.white, size: 16.sp),
+              child: Icon(
+                Icons.admin_panel_settings,
+                color: Colors.white,
+                size: 16.sp,
+              ),
             ),
             SizedBox(width: 8.w),
             const Text('Admin Dashboard'),
@@ -52,9 +55,10 @@ class AdminHomeScreen extends ConsumerWidget {
                     child: Text(
                       user.username[0].toUpperCase(),
                       style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 13.sp),
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 13.sp,
+                      ),
                     ),
                   ),
                   SizedBox(width: 6.w),
@@ -100,105 +104,113 @@ class AdminHomeScreen extends ConsumerWidget {
                       Text(
                         'Manage your library from here.',
                         style: TextStyle(
-                            color: Colors.white70, fontSize: 14.sp),
+                          color: Colors.white70,
+                          fontSize: 14.sp,
+                        ),
                       ),
                     ],
                   ),
                 ),
                 SizedBox(height: 20.h),
 
-                LayoutBuilder(builder: (context, constraints) {
-                  final cols = constraints.maxWidth > 600 ? 4 : 2;
-                  return GridView.count(
-                    crossAxisCount: cols,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    crossAxisSpacing: 12.w,
-                    mainAxisSpacing: 12.h,
-                    childAspectRatio: 1.2,
-                    children: [
-                      StatCard(
-                        label: 'Total Books',
-                        value: '$totalBooks',
-                        icon: Icons.library_books_outlined,
-                        color: AppColors.primary,
-                      ),
-                      StatCard(
-                        label: 'Available',
-                        value: '$availableBooks',
-                        icon: Icons.check_circle_outline,
-                        color: AppColors.success,
-                      ),
-                      StatCard(
-                        label: 'Borrowed',
-                        value: '$borrowedBooks',
-                        icon: Icons.bookmark_outlined,
-                        color: AppColors.warning,
-                      ),
-                      StatCard(
-                        label: 'Total Users',
-                        value: '$totalUsers',
-                        icon: Icons.people_outline,
-                        color: AppColors.secondary,
-                      ),
-                    ],
-                  );
-                }),
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    final cols = constraints.maxWidth > 600 ? 4 : 2;
+                    return GridView.count(
+                      crossAxisCount: cols,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      crossAxisSpacing: 12.w,
+                      mainAxisSpacing: 12.h,
+                      childAspectRatio: 1.2,
+                      children: [
+                        StatCard(
+                          label: 'Total Books',
+                          value: '$totalBooks',
+                          icon: Icons.library_books_outlined,
+                          color: AppColors.primary,
+                        ),
+                        StatCard(
+                          label: 'Available',
+                          value: '$availableBooks',
+                          icon: Icons.check_circle_outline,
+                          color: AppColors.success,
+                        ),
+                        StatCard(
+                          label: 'Borrowed',
+                          value: '$borrowedBooks',
+                          icon: Icons.bookmark_outlined,
+                          color: AppColors.warning,
+                        ),
+                        StatCard(
+                          label: 'Total Users',
+                          value: '$totalUsers',
+                          icon: Icons.people_outline,
+                          color: AppColors.secondary,
+                        ),
+                      ],
+                    );
+                  },
+                ),
                 SizedBox(height: 20.h),
 
-                Text('Quick Actions',
-                    style: Theme.of(context).textTheme.headlineSmall),
+                Text(
+                  'Quick Actions',
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
                 SizedBox(height: 12.h),
-                LayoutBuilder(builder: (context, constraints) {
-                  final cols = constraints.maxWidth > 600 ? 4 : 2;
-                  return GridView.count(
-                    crossAxisCount: cols,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    crossAxisSpacing: 12.w,
-                    mainAxisSpacing: 12.h,
-                    childAspectRatio: 1.5,
-                    children: [
-                      _actionCard(
-                        context,
-                        icon: Icons.library_add_outlined,
-                        label: 'Manage Books',
-                        color: AppColors.primary,
-                        onTap: () => context.go('/admin/books'),
-                      ),
-                      _actionCard(
-                        context,
-                        icon: Icons.people_outline,
-                        label: 'Manage Users',
-                        color: AppColors.secondary,
-                        onTap: () => context.go('/admin/users'),
-                      ),
-                      _actionCard(
-                        context,
-                        icon: Icons.bar_chart_outlined,
-                        label: 'Reports',
-                        color: AppColors.success,
-                        onTap: () => context.go('/admin/reports'),
-                      ),
-                      _actionCard(
-                        context,
-                        icon: Icons.refresh_outlined,
-                        label: 'Refresh Data',
-                        color: AppColors.warning,
-                        onTap: () {
-                          ref.read(booksProvider.notifier).refresh();
-                          ref.read(usersProvider.notifier).refresh();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Data refreshed!'),
-                              backgroundColor: AppColors.success,
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  );
-                }),
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    final cols = constraints.maxWidth > 600 ? 4 : 2;
+                    return GridView.count(
+                      crossAxisCount: cols,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      crossAxisSpacing: 12.w,
+                      mainAxisSpacing: 12.h,
+                      childAspectRatio: 1.5,
+                      children: [
+                        _actionCard(
+                          context,
+                          icon: Icons.library_add_outlined,
+                          label: 'Manage Books',
+                          color: AppColors.primary,
+                          onTap: () => context.go('/admin/books'),
+                        ),
+                        _actionCard(
+                          context,
+                          icon: Icons.people_outline,
+                          label: 'Manage Users',
+                          color: AppColors.secondary,
+                          onTap: () => context.go('/admin/users'),
+                        ),
+                        _actionCard(
+                          context,
+                          icon: Icons.bar_chart_outlined,
+                          label: 'Reports',
+                          color: AppColors.success,
+                          onTap: () => context.go('/admin/reports'),
+                        ),
+                        _actionCard(
+                          context,
+                          icon: Icons.refresh_outlined,
+                          label: 'Refresh Data',
+                          color: AppColors.warning,
+                          onTap: () {
+                            ref.read(booksProvider.notifier).refresh();
+                            ref.read(usersProvider.notifier).refresh();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Data refreshed!'),
+                                backgroundColor: AppColors.success,
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                ),
                 SizedBox(height: 20.h),
 
                 SectionHeader(
@@ -207,20 +219,28 @@ class AdminHomeScreen extends ConsumerWidget {
                   onAction: () => context.go('/admin/books'),
                 ),
                 SizedBox(height: 12.h),
-                ...booksState.books.take(5).map(
+                ...booksState.books
+                    .take(5)
+                    .map(
                       (book) => Padding(
                         padding: EdgeInsets.only(bottom: 8.h),
                         child: Card(
                           child: ListTile(
                             leading: BookAvatar(title: book.title, size: 42),
-                            title: Text(book.title,
-                                style: TextStyle(
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.w600)),
-                            subtitle: Text('${book.author} • ${book.genre}',
-                                style: TextStyle(fontSize: 12.sp)),
+                            title: Text(
+                              book.title,
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            subtitle: Text(
+                              '${book.author} • ${book.genre}',
+                              style: TextStyle(fontSize: 12.sp),
+                            ),
                             trailing: StatusBadge(
-                                isAvailable: book.isAvailable),
+                              isAvailable: book.isAvailable,
+                            ),
                           ),
                         ),
                       ),

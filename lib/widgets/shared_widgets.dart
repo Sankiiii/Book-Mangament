@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../utils/app_theme.dart';
 
-
 class AppButton extends StatelessWidget {
   final String label;
   final VoidCallback? onPressed;
@@ -54,8 +53,7 @@ class AppButton extends StatelessWidget {
           onPressed: isLoading ? null : onPressed,
           style: OutlinedButton.styleFrom(
             foregroundColor: foregroundColor ?? AppColors.primary,
-            side: BorderSide(
-                color: foregroundColor ?? AppColors.primary),
+            side: BorderSide(color: foregroundColor ?? AppColors.primary),
           ),
           child: child,
         ),
@@ -74,7 +72,6 @@ class AppButton extends StatelessWidget {
     );
   }
 }
-
 
 class AppTextField extends StatelessWidget {
   final String label;
@@ -112,9 +109,9 @@ class AppTextField extends StatelessWidget {
         Text(
           label,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w500,
-                fontSize: 13.sp,
-              ),
+            fontWeight: FontWeight.w500,
+            fontSize: 13.sp,
+          ),
         ),
         SizedBox(height: 6.h),
         TextFormField(
@@ -125,10 +122,9 @@ class AppTextField extends StatelessWidget {
           maxLines: maxLines,
           enabled: enabled,
           onChanged: onChanged,
-          style: Theme.of(context)
-              .textTheme
-              .bodyLarge
-              ?.copyWith(fontSize: 14.sp),
+          style: Theme.of(
+            context,
+          ).textTheme.bodyLarge?.copyWith(fontSize: 14.sp),
           decoration: InputDecoration(
             hintText: hint,
             suffixIcon: suffixIcon,
@@ -139,7 +135,6 @@ class AppTextField extends StatelessWidget {
     );
   }
 }
-
 
 class AppDropdown<T> extends StatelessWidget {
   final String label;
@@ -165,9 +160,9 @@ class AppDropdown<T> extends StatelessWidget {
         Text(
           label,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w500,
-                fontSize: 13.sp,
-              ),
+            fontWeight: FontWeight.w500,
+            fontSize: 13.sp,
+          ),
         ),
         SizedBox(height: 6.h),
         DropdownButtonFormField<T>(
@@ -175,17 +170,15 @@ class AppDropdown<T> extends StatelessWidget {
           items: items,
           onChanged: onChanged,
           validator: validator,
-          style: Theme.of(context)
-              .textTheme
-              .bodyLarge
-              ?.copyWith(fontSize: 14.sp),
+          style: Theme.of(
+            context,
+          ).textTheme.bodyLarge?.copyWith(fontSize: 14.sp),
           decoration: const InputDecoration(),
         ),
       ],
     );
   }
 }
-
 
 class StatusBadge extends StatelessWidget {
   final bool isAvailable;
@@ -228,7 +221,6 @@ class StatusBadge extends StatelessWidget {
   }
 }
 
-
 class RoleBadge extends StatelessWidget {
   final String role;
 
@@ -255,7 +247,6 @@ class RoleBadge extends StatelessWidget {
     );
   }
 }
-
 
 class EmptyStateWidget extends StatelessWidget {
   final String title;
@@ -313,7 +304,6 @@ class EmptyStateWidget extends StatelessWidget {
   }
 }
 
-
 class BookAvatar extends StatelessWidget {
   final String title;
   final double size;
@@ -358,7 +348,6 @@ class BookAvatar extends StatelessWidget {
   }
 }
 
-
 class SectionHeader extends StatelessWidget {
   final String title;
   final String? actionLabel;
@@ -383,7 +372,6 @@ class SectionHeader extends StatelessWidget {
     );
   }
 }
-
 
 class StatCard extends StatelessWidget {
   final String label;
@@ -420,15 +408,12 @@ class StatCard extends StatelessWidget {
             Text(
               value,
               style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                    color: color,
-                    fontWeight: FontWeight.w700,
-                  ),
+                color: color,
+                fontWeight: FontWeight.w700,
+              ),
             ),
             SizedBox(height: 4.h),
-            Text(
-              label,
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
+            Text(label, style: Theme.of(context).textTheme.bodySmall),
           ],
         ),
       ),

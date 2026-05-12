@@ -1,10 +1,8 @@
-import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 import '../models/user_model.dart';
 import '../utils/app_constants.dart';
-
 
 class AuthState {
   final UserModel? currentUser;
@@ -27,8 +25,7 @@ class AuthState {
     return AuthState(
       currentUser: clearUser ? null : (currentUser ?? this.currentUser),
       isLoading: isLoading ?? this.isLoading,
-      errorMessage:
-          clearError ? null : (errorMessage ?? this.errorMessage),
+      errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
     );
   }
 
@@ -36,63 +33,52 @@ class AuthState {
   bool get isAdmin => currentUser?.role == AppConstants.roleAdmin;
 }
 
-
 class AuthNotifier extends StateNotifier<AuthState> {
   AuthNotifier() : super(const AuthState()) {
     _init();
   }
 
   static const _uuid = Uuid();
+  final _usersCollection = FirebaseFirestore.instance.collection('users');
 
   Future<void> _init() async {
     state = state.copyWith(isLoading: true);
-    final prefs = await SharedPreferences.getInstance();
-    final userJson = prefs.getString(AppConstants.currentUserKey);
-    if (userJson != null) {
-      final user = UserModel.fromJson(jsonDecode(userJson));
-      state = state.copyWith(currentUser: user, isLoading: false);
-    } else {
-      state = state.copyWith(isLoading: false);
-    }
     await _seedDefaultData();
+    state = state.copyWith(isLoading: false);
   }
 
   Future<void> _seedDefaultData() async {
-    final prefs = await SharedPreferences.getInstance();
-    final usersJson = prefs.getString(AppConstants.usersKey);
-    if (usersJson == null) {
-      final admin = UserModel(
-        id: _uuid.v4(),
-        username: 'admin',
-        email: 'admin@bookshelf.com',
-        password: 'admin123',
-        role: AppConstants.roleAdmin,
-      );
-      final user = UserModel(
-        id: _uuid.v4(),
-        username: 'user',
-        email: 'user@bookshelf.com',
-        password: 'user123',
-        role: AppConstants.roleUser,
-      );
-      await _saveUsers([admin, user]);
-    }
+    final snapshot = await _usersCollection.limit(1).get();
+    if (snapshot.docs.isNotEmpty) return;
+
+    final admin = UserModel(
+      id: _uuid.v4(),
+      username: 'admin',
+      email: 'admin@bookshelf.com',
+      password: 'admin123',
+      role: AppConstants.roleAdmin,
+    );
+    final user = UserModel(
+      id: _uuid.v4(),
+      username: 'user',
+      email: 'user@bookshelf.com',
+      password: 'user123',
+      role: AppConstants.roleUser,
+    );
+    await _saveUsers([admin, user]);
   }
 
   Future<List<UserModel>> _getUsers() async {
-    final prefs = await SharedPreferences.getInstance();
-    final usersJson = prefs.getString(AppConstants.usersKey);
-    if (usersJson == null) return [];
-    final List decoded = jsonDecode(usersJson);
-    return decoded.map((e) => UserModel.fromJson(e)).toList();
+    final snapshot = await _usersCollection.get();
+    return snapshot.docs.map((doc) => UserModel.fromJson(doc.data())).toList();
   }
 
   Future<void> _saveUsers(List<UserModel> users) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(
-      AppConstants.usersKey,
-      jsonEncode(users.map((u) => u.toJson()).toList()),
-    );
+    final batch = FirebaseFirestore.instance.batch();
+    for (final user in users) {
+      batch.set(_usersCollection.doc(user.id), user.toJson());
+    }
+    await batch.commit();
   }
 
   Future<bool> login(String username, String password, String role) async {
@@ -114,9 +100,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
         return false;
       }
       final user = match.first;
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString(
-          AppConstants.currentUserKey, jsonEncode(user.toJson()));
       state = state.copyWith(currentUser: user, isLoading: false);
       return true;
     } catch (_) {
@@ -129,7 +112,11 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   Future<bool> register(
-      String username, String email, String password, String role) async {
+    String username,
+    String email,
+    String password,
+    String role,
+  ) async {
     state = state.copyWith(isLoading: true, clearError: true);
     await Future.delayed(const Duration(milliseconds: 600));
     try {
@@ -153,11 +140,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
         password: password,
         role: role,
       );
-      users.add(newUser);
-      await _saveUsers(users);
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString(
-          AppConstants.currentUserKey, jsonEncode(newUser.toJson()));
+      await _usersCollection.doc(newUser.id).set(newUser.toJson());
       state = state.copyWith(currentUser: newUser, isLoading: false);
       return true;
     } catch (_) {
@@ -170,27 +153,20 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   Future<void> logout() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(AppConstants.currentUserKey);
     state = state.copyWith(clearUser: true);
   }
 
   Future<void> refreshCurrentUser() async {
     if (state.currentUser == null) return;
-    final users = await _getUsers();
-    final updated = users.where((u) => u.id == state.currentUser!.id);
-    if (updated.isNotEmpty) {
-      final u = updated.first;
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString(
-          AppConstants.currentUserKey, jsonEncode(u.toJson()));
-      state = state.copyWith(currentUser: u);
+    final doc = await _usersCollection.doc(state.currentUser!.id).get();
+    final data = doc.data();
+    if (data != null) {
+      state = state.copyWith(currentUser: UserModel.fromJson(data));
     }
   }
 
   void clearError() => state = state.copyWith(clearError: true);
 }
-
 
 final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
   return AuthNotifier();
