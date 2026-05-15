@@ -41,8 +41,7 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> {
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
-            style:
-                ElevatedButton.styleFrom(backgroundColor: AppColors.error),
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
             child: const Text('Delete'),
           ),
         ],
@@ -71,8 +70,10 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> {
       context: context,
       builder: (_) => StatefulBuilder(
         builder: (ctx, setS) => AlertDialog(
-          title: Text('Edit User',
-              style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w700)),
+          title: Text(
+            'Edit User',
+            style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w700),
+          ),
           content: SizedBox(
             width: 380.w,
             child: Form(
@@ -83,25 +84,22 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> {
                   AppTextField(
                     label: 'Username',
                     controller: usernameCtrl,
-                    validator: (v) => v == null || v.isEmpty
-                        ? 'Username required'
-                        : null,
+                    validator: (v) =>
+                        v == null || v.isEmpty ? 'Username required' : null,
                   ),
                   SizedBox(height: 14.h),
                   AppTextField(
                     label: 'Email',
                     controller: emailCtrl,
-                    validator: (v) => v == null || v.isEmpty
-                        ? 'Email required'
-                        : null,
+                    validator: (v) =>
+                        v == null || v.isEmpty ? 'Email required' : null,
                   ),
                   SizedBox(height: 14.h),
                   AppDropdown<String>(
                     label: 'Role',
                     value: role,
                     items: ['User', 'Admin']
-                        .map((r) =>
-                            DropdownMenuItem(value: r, child: Text(r)))
+                        .map((r) => DropdownMenuItem(value: r, child: Text(r)))
                         .toList(),
                     onChanged: (v) => setS(() => role = v!),
                   ),
@@ -117,7 +115,9 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> {
             ElevatedButton(
               onPressed: () async {
                 if (!formKey.currentState!.validate()) return;
-                await ref.read(usersProvider.notifier).updateUser(
+                await ref
+                    .read(usersProvider.notifier)
+                    .updateUser(
                       user.copyWith(
                         username: usernameCtrl.text.trim(),
                         email: emailCtrl.text.trim(),
@@ -180,8 +180,7 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> {
                         hintText: 'Search users...',
                         prefixIcon: const Icon(Icons.search, size: 20),
                         hintStyle: TextStyle(fontSize: 13.sp),
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 10.h),
+                        contentPadding: EdgeInsets.symmetric(vertical: 10.h),
                       ),
                     ),
                   ),
@@ -190,7 +189,9 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> {
                 Text(
                   '${filtered.length} users',
                   style: TextStyle(
-                      fontSize: 13.sp, color: AppColors.textSecondary),
+                    fontSize: 13.sp,
+                    color: AppColors.textSecondary,
+                  ),
                 ),
               ],
             ),
@@ -199,17 +200,19 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> {
             child: usersState.isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : filtered.isEmpty
-                    ? const EmptyStateWidget(
-                        title: 'No users found',
-                        subtitle: 'Try a different search',
-                        icon: Icons.people_outline,
-                      )
-                    : LayoutBuilder(builder: (context, constraints) {
-                        if (constraints.maxWidth > 700) {
-                          return _buildTable(filtered, booksState.books);
-                        }
-                        return _buildList(filtered, booksState.books);
-                      }),
+                ? const EmptyStateWidget(
+                    title: 'No users found',
+                    subtitle: 'Try a different search',
+                    icon: Icons.people_outline,
+                  )
+                : LayoutBuilder(
+                    builder: (context, constraints) {
+                      if (constraints.maxWidth > 700) {
+                        return _buildTable(filtered, booksState.books);
+                      }
+                      return _buildList(filtered, booksState.books);
+                    },
+                  ),
           ),
         ],
       ),
@@ -231,53 +234,70 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> {
             DataColumn(label: Text('Actions')),
           ],
           rows: users.map((user) {
-            final borrowedCount =
-                books.where((b) => b.borrowedBy == user.id).length;
-            return DataRow(cells: [
-              DataCell(Row(
-                children: [
-                  CircleAvatar(
-                    radius: 16.r,
-                    backgroundColor: user.role == 'Admin'
-                        ? AppColors.adminColor
-                        : AppColors.primary,
-                    child: Text(
-                      user.username[0].toUpperCase(),
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w600),
-                    ),
+            final borrowedCount = books
+                .where((b) => b.borrowedBy == user.id)
+                .length;
+            return DataRow(
+              cells: [
+                DataCell(
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 16.r,
+                        backgroundColor: user.role == 'Admin'
+                            ? AppColors.adminColor
+                            : AppColors.primary,
+                        child: Text(
+                          user.username[0].toUpperCase(),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 8.w),
+                      Text(
+                        user.username,
+                        style: TextStyle(
+                          fontSize: 13.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
                   ),
-                  SizedBox(width: 8.w),
-                  Text(user.username,
-                      style: TextStyle(
-                          fontSize: 13.sp, fontWeight: FontWeight.w600)),
-                ],
-              )),
-              DataCell(Text(user.email,
-                  style: TextStyle(fontSize: 13.sp))),
-              DataCell(RoleBadge(role: user.role)),
-              DataCell(Text('$borrowedCount',
-                  style: TextStyle(fontSize: 13.sp))),
-              DataCell(Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.edit_outlined,
-                        color: AppColors.primary),
-                    onPressed: () => _showEditDialog(user),
-                    iconSize: 20.sp,
+                ),
+                DataCell(Text(user.email, style: TextStyle(fontSize: 13.sp))),
+                DataCell(RoleBadge(role: user.role)),
+                DataCell(
+                  Text('$borrowedCount', style: TextStyle(fontSize: 13.sp)),
+                ),
+
+                DataCell(
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(
+                          Icons.edit_outlined,
+                          color: AppColors.primary,
+                        ),
+                        onPressed: () => _showEditDialog(user),
+                        iconSize: 20.sp,
+                      ),
+                      IconButton(
+                        icon: const Icon(
+                          Icons.delete_outline,
+                          color: AppColors.error,
+                        ),
+                        onPressed: () => _deleteUser(user),
+                        iconSize: 20.sp,
+                      ),
+                    ],
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.delete_outline,
-                        color: AppColors.error),
-                    onPressed: () => _deleteUser(user),
-                    iconSize: 20.sp,
-                  ),
-                ],
-              )),
-            ]);
+                ),
+              ],
+            );
           }).toList(),
         ),
       ),
@@ -291,8 +311,13 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> {
       separatorBuilder: (_, __) => SizedBox(height: 8.h),
       itemBuilder: (_, i) {
         final user = users[i];
-        final borrowedCount =
-            books.where((b) => b.borrowedBy == user.id).length;
+        final borrowedCount = books
+            .where((b) => b.borrowedBy == user.id)
+            .length;
+        final borrowBookList = books
+            .where((b) => b.borrowedBy == user.id)
+            .toList();
+
         return Card(
           child: ListTile(
             leading: CircleAvatar(
@@ -303,16 +328,21 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> {
               child: Text(
                 user.username[0].toUpperCase(),
                 style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16.sp),
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16.sp,
+                ),
               ),
             ),
             title: Row(
               children: [
-                Text(user.username,
-                    style: TextStyle(
-                        fontSize: 14.sp, fontWeight: FontWeight.w600)),
+                Text(
+                  user.username,
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
                 SizedBox(width: 8.w),
                 RoleBadge(role: user.role),
               ],
@@ -320,12 +350,21 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> {
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(user.email,
-                    style: TextStyle(
-                        fontSize: 12.sp, color: AppColors.textSecondary)),
-                Text('$borrowedCount books borrowed',
-                    style: TextStyle(
-                        fontSize: 11.sp, color: AppColors.textHint)),
+                Text(
+                  user.email,
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+                Text(
+                  '$borrowedCount books borrowed',
+                  style: TextStyle(fontSize: 11.sp, color: AppColors.textHint),
+                ),
+                Text(
+                  "Borrowed: ${borrowBookList.map((b) => b.title).join(', ')}",
+                  style: TextStyle(fontSize: 11.sp, color: AppColors.textHint),
+                ),
               ],
             ),
             isThreeLine: true,
@@ -333,14 +372,18 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
-                  icon: const Icon(Icons.edit_outlined,
-                      color: AppColors.primary),
+                  icon: const Icon(
+                    Icons.edit_outlined,
+                    color: AppColors.primary,
+                  ),
                   onPressed: () => _showEditDialog(user),
                   iconSize: 20.sp,
                 ),
                 IconButton(
-                  icon: const Icon(Icons.delete_outline,
-                      color: AppColors.error),
+                  icon: const Icon(
+                    Icons.delete_outline,
+                    color: AppColors.error,
+                  ),
                   onPressed: () => _deleteUser(user),
                   iconSize: 20.sp,
                 ),
