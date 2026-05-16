@@ -121,6 +121,33 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
+  Future<bool> signInAsAdmin({
+    required String username,
+    required String password,
+  }) async {
+    state = state.copyWith(isLoading: true, clearError: true);
+    await Future<void>.delayed(const Duration(milliseconds: 250));
+
+    final normalizedUsername = username.trim();
+    if (normalizedUsername == AppConstants.adminUsername &&
+        password == AppConstants.adminPassword) {
+      final adminUser = UserModel(
+        id: 'local-admin',
+        username: 'Admin',
+        email: 'admin@bookshelf.local',
+        role: AppConstants.roleAdmin,
+      );
+      state = state.copyWith(currentUser: adminUser, isLoading: false);
+      return true;
+    }
+
+    state = state.copyWith(
+      isLoading: false,
+      errorMessage: 'Invalid admin username or password.',
+    );
+    return false;
+  }
+
   Future<void> logout() async {
     await GoogleSignIn().signOut();
     await _firebaseAuth.signOut();

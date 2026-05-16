@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../providers/auth_provider.dart';
 import '../../utils/app_constants.dart';
 import '../../utils/app_theme.dart';
+import '../../widgets/shared_widgets.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -13,6 +14,18 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
+  final _adminFormKey = GlobalKey<FormState>();
+  final _adminUsernameController = TextEditingController();
+  final _adminPasswordController = TextEditingController();
+  bool _hideAdminPassword = true;
+
+  @override
+  void dispose() {
+    _adminUsernameController.dispose();
+    _adminPasswordController.dispose();
+    super.dispose();
+  }
+
   Future<void> _signInWithGoogle() async {
     final success = await ref.read(authProvider.notifier).signInWithGoogle();
     if (!success && mounted) {
@@ -20,6 +33,26 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(error ?? 'Google sign-in failed'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    }
+  }
+
+  Future<void> _signInAsAdmin() async {
+    if (!_adminFormKey.currentState!.validate()) return;
+
+    final success = await ref
+        .read(authProvider.notifier)
+        .signInAsAdmin(
+          username: _adminUsernameController.text,
+          password: _adminPasswordController.text,
+        );
+    if (!success && mounted) {
+      final error = ref.read(authProvider).errorMessage;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(error ?? 'Admin login failed'),
           backgroundColor: AppColors.error,
         ),
       );
@@ -168,22 +201,106 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             style: TextStyle(fontSize: 14.sp, color: AppColors.textSecondary),
           ),
           SizedBox(height: 24.h),
-          OutlinedButton.icon(
-            onPressed: authState.isLoading ? null : _signInWithGoogle,
-            icon: authState.isLoading
-                ? SizedBox(
-                    width: 18.w,
-                    height: 18.w,
-                    child: const CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : Icon(Icons.login, size: 20.sp),
-            label: Padding(
-              padding: EdgeInsets.symmetric(vertical: 12.h),
-              child: Text(
-                authState.isLoading ? 'Signing in...' : 'Continue with Google',
-                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),
-              ),
+          _buildGoogleLogin(authState),
+          SizedBox(height: 22.h),
+          _buildDividerLabel('Admin login'),
+          SizedBox(height: 18.h),
+          _buildAdminLogin(authState),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildGoogleLogin(AuthState authState) {
+    return OutlinedButton.icon(
+      key: const ValueKey('google-login'),
+      onPressed: authState.isLoading ? null : _signInWithGoogle,
+      icon: authState.isLoading
+          ? SizedBox(
+              width: 18.w,
+              height: 18.w,
+              child: const CircularProgressIndicator(strokeWidth: 2),
+            )
+          : Icon(Icons.login, size: 20.sp),
+      label: Padding(
+        padding: EdgeInsets.symmetric(vertical: 12.h),
+        child: Text(
+          authState.isLoading ? 'Signing in...' : 'Continue with Google',
+          style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDividerLabel(String label) {
+    return Row(
+      children: [
+        const Expanded(child: Divider()),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 12.w),
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 12.sp,
+              color: AppColors.textSecondary,
+              fontWeight: FontWeight.w600,
             ),
+          ),
+        ),
+        const Expanded(child: Divider()),
+      ],
+    );
+  }
+
+  Widget _buildAdminLogin(AuthState authState) {
+    return Form(
+      key: _adminFormKey,
+      child: Column(
+        key: const ValueKey('admin-login'),
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          AppTextField(
+            label: 'Admin username',
+            hint: 'Enter admin username',
+            controller: _adminUsernameController,
+            prefixIcon: const Icon(Icons.person_outline),
+            validator: (value) => value == null || value.trim().isEmpty
+                ? 'Username required'
+                : null,
+          ),
+          SizedBox(height: 14.h),
+          AppTextField(
+            label: 'Password',
+            hint: 'Enter password',
+            controller: _adminPasswordController,
+            obscureText: _hideAdminPassword,
+            prefixIcon: const Icon(Icons.lock_outline),
+            suffixIcon: IconButton(
+              icon: Icon(
+                _hideAdminPassword
+                    ? Icons.visibility_outlined
+                    : Icons.visibility_off_outlined,
+              ),
+              onPressed: () {
+                setState(() => _hideAdminPassword = !_hideAdminPassword);
+              },
+            ),
+            validator: (value) =>
+                value == null || value.isEmpty ? 'Password required' : null,
+          ),
+          SizedBox(height: 18.h),
+          AppButton(
+            label: authState.isLoading ? 'Signing in...' : 'Login as Admin',
+            icon: Icons.admin_panel_settings_outlined,
+            isLoading: authState.isLoading,
+            backgroundColor: AppColors.adminColor,
+            onPressed: authState.isLoading ? null : _signInAsAdmin,
+          ),
+          SizedBox(height: 12.h),
+          Text(
+            'Default admin: ${AppConstants.adminUsername} / ${AppConstants.adminPassword}',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 11.sp, color: AppColors.textHint),
           ),
         ],
       ),

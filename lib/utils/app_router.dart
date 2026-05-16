@@ -24,14 +24,24 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       if (isLoading) return null;
 
-      final isAuthRoute = loc == AppConstants.loginRoute ||
-          loc == AppConstants.registerRoute;
+      final isAuthRoute =
+          loc == AppConstants.loginRoute || loc == AppConstants.registerRoute;
 
       if (!isAuth && !isAuthRoute) return AppConstants.loginRoute;
       if (isAuth && isAuthRoute) {
         return authState.isAdmin
             ? AppConstants.adminHomeRoute
             : AppConstants.userHomeRoute;
+      }
+      if (isAuth &&
+          loc.startsWith(AppConstants.adminHomeRoute) &&
+          !authState.isAdmin) {
+        return AppConstants.userHomeRoute;
+      }
+      if (isAuth &&
+          loc.startsWith(AppConstants.userHomeRoute) &&
+          authState.isAdmin) {
+        return AppConstants.adminHomeRoute;
       }
       return null;
     },
@@ -73,10 +83,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         ],
       ),
     ],
-    errorBuilder: (context, state) => Scaffold(
-      body: Center(
-        child: Text('Page not found: ${state.error}'),
-      ),
-    ),
+    errorBuilder: (context, state) =>
+        Scaffold(body: Center(child: Text('Page not found: ${state.error}'))),
   );
 });
